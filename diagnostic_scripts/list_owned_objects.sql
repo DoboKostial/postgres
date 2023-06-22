@@ -1,6 +1,6 @@
 ########################################
-This sql script lists all objects owned by particular user.oll objects owned by particular user.
-Very usefull when deleting user and should know his objects...
+# This sql script lists all objects owned by particular user.oll objects owned by particular user.
+# Very usefull when deleting user and should know his objects...
 ########################################
 
 SELECT                     
