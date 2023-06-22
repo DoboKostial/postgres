@@ -1,6 +1,6 @@
 ############################
-#this sql script takes username (optional) and table name (optional and could be any relation object) 
-and lists all permissions for user/object.
+# this sql script takes username (optional) and table name (optional and could be any relation object) 
+# and lists all permissions for user/object.
 ############################
 
 SELECT r.rolname AS user_name, c.oid::regclass AS table_name, p.perm AS privilege_type 
