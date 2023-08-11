@@ -1,0 +1,37 @@
+---
+- name: Retrieve list of databases and schemas from PostgreSQL cluster
+  hosts: "{{ playbook_target }}"
+  become: yes
+  tasks:
+
+    - name: Get list of databases
+      postgresql_query:
+        query: "SELECT datname FROM pg_database WHERE datistemplate = false;"
+      register: db_list
+
+#    - name: Display list of databases
+#      debug:
+#        msg: "{{ db_list }}"
+
+    - name: Extract database names
+      set_fact:
+        database_names: "{{ db_list.query_result | map(attribute='datname') | list }}"
+
+    - name: Display extracted database names
+      debug:
+        msg: "{{ database_names }}"
+
+    - name: Loop over database names and retrieve schemas
+      postgresql_query:
+        db: "{{ item }}"
+        query: "SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT LIKE 'pg_%' AND schema_name != 'information_schema';"
+      loop: "{{ database_names }}"
+      register: schema_list
+
+    - name: Display schema names for each database
+      debug:
+        msg: "Database: {{ item.item }}, Schemas: {{ item.query_result | map(attribute='schema_name') | join(', ') }}"
+      loop: "{{ schema_list.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
