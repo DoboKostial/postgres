@@ -1,3 +1,6 @@
+# although seems like a simple playbook "why not to use psql \l command", this works a little different
+# while listing anly databases in cluster if three are more than 1
+
 ---
 - hosts: "{{ playbook_target }}"
   become: true
