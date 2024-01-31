@@ -1,0 +1,19 @@
+# although seems like a simple playbook "why not to use psql \l command", this works a little different
+# while listing anly databases in cluster if three are more than 1
+
+---
+- hosts: "{{ playbook_target }}"
+  become: true
+  gather_facts: no
+  tasks:
+  - name: simple query to get datnames from cluster
+    postgresql_query:
+      db: postgres
+      query: SELECT datname from pg_database where not datistemplate and datname !='postgres'
+    register: query_data
+  - name: print results
+    debug:
+      var: query_data
+  - debug:
+      msg: "{{ query_data.query_result | map (attribute='datname') | list }}"
+    when: query_data.rowcount > 1
