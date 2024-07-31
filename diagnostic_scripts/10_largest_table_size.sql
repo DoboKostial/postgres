@@ -5,5 +5,5 @@ SELECT
 FROM pg_catalog.pg_statio_user_tables
 ORDER BY pg_total_relation_size(relid) DESC,
          pg_relation_size(relid) DESC
-LIMIT 20;
+LIMIT 10;
 
