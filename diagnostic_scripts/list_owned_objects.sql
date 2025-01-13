@@ -27,6 +27,8 @@ ORDER BY pg_namespace.nspname, pg_class.relname;
 
 #########################################################
 # This is similar, but as a function (rolename as paramater)
+# call the function like this:
+# select * from get_role_objects('role');
 #########################################################
 
 CREATE OR REPLACE FUNCTION get_role_objects(role_name TEXT)
@@ -37,13 +39,14 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT n.nspname AS schema_name,
-           c.relname AS object_name,
-           c.relkind AS object_type
+    SELECT n.nspname::text AS schema_name,
+           c.relname::text AS object_name,
+           c.relkind::text AS object_type
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE c.relowner = role_name::regrole;
 END;
 $$ LANGUAGE plpgsql;
+
 
 
