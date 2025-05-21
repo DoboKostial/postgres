@@ -49,7 +49,7 @@ if [[ ! -s "$TMP_INFO" ]]; then
     exit 1
 fi
 
-### === LOOPING OVER CLUSTERY === ###
+### === LOOPING OVER CLUSTERS === ###
 while IFS=: read -r BIN_PATH PGDATA; do
 
     [[ -n "$CLUSTER_ARG" && "$(basename "$PGDATA")" != "$CLUSTER_ARG" ]] && continue
@@ -77,7 +77,7 @@ while IFS=: read -r BIN_PATH PGDATA; do
         continue
     fi
 
-    # === MAZÁNÍ STARÝCH ZÁLOH ===
+    # === DELETE OLDER BACKUPS!!! ===
     echo "Cleaning backups older than $BACKUP_RETENTION days in $BACKUP_DIR"
     find "$BACKUP_DIR" -maxdepth 1 -type f -name "*.tar.gz" -mtime +$BACKUP_RETENTION -print -delete
     find "$BACKUP_DIR" -maxdepth 1 -type f -name "backup_manifest" -mtime +$BACKUP_RETENTION -print -delete
