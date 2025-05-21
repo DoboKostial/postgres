@@ -1,5 +1,5 @@
 ########################################
-# This sql script lists all objects owned by particular user.oll objects owned by particular user.
+# This sql script lists all objects owned by particular user.
 # Very usefull when deleting user and should know his objects...
 ########################################
 
@@ -23,3 +23,30 @@ WHERE pg_namespace.nspname NOT IN ('information_schema', 'pg_catalog')
     AND pg_namespace.nspname NOT LIKE 'pg_toast%'
     AND pg_roles.rolname = 'zmizik'  
 ORDER BY pg_namespace.nspname, pg_class.relname;
+
+
+#########################################################
+# This is similar, but as a function (rolename as paramater)
+# call the function like this:
+# select * from get_role_objects('role');
+#########################################################
+
+CREATE OR REPLACE FUNCTION get_role_objects(role_name TEXT)
+RETURNS TABLE (
+    schema_name TEXT,
+    object_name TEXT,
+    object_type TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT n.nspname::text AS schema_name,
+           c.relname::text AS object_name,
+           c.relkind::text AS object_type
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE c.relowner = role_name::regrole;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
